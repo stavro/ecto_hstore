@@ -78,6 +78,12 @@ user.flags #=> %{"key" => "value"}
 flags = Dict.put(user.flags, "key2", "value2")
 user = %User{user| flags: flags}
 Repo.update user
+
+query = from u in User,
+          where: fragment("?->'?' = '?'", u.flags, "key2", "value2"),
+          select: u
+
+users = Repo.all(query) #=> [%User{flags: %{"key" => "value", "key2" => "value2"} ...]
 ```
 
 ## Quirks
