@@ -49,7 +49,7 @@ Repo.update user
 Elixir Maps and Postgres Hstore types have a few important differences that users should be cautious of.  The current behavior of these edge cases may change in future releases of `Ecto.Hstore`.
 
   * Postgres Hstore does not allow `null` keys, whereas Elixir Maps do.  Currently `nil` keys will not be serialized to Postgres.
-  * Postgres Hstore does not have an `atom` type.  All keys are stored as strings.  Therefore extra caution must be taken to ensure that an Elixir Map doesn't contain two converging keys (eg: %{:a => 2, "a" => 2}), because they will be consolidated to one string key `"a"` in a non-deterministic manner.
+  * Postgres Hstore does not have an `atom` type.  All keys are stored as strings.  Therefore extra caution must be taken to ensure that an Elixir Map doesn't contain two converging keys (eg: `%{:a => 2, "a" => 2}`), because they will be consolidated to one string key `"a"` in a non-deterministic manner.
 
 ## Contributing
 

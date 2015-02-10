@@ -56,9 +56,9 @@ defmodule Ecto.Hstore do
     {Dict.put(%{}, to_string(key), value), tail}
   end
 
-  def read_item_quoted([34|tail]), do: read_item_quoted(tail, [])
-  def read_item_quoted([78,85,76,76|tail]), do: {nil, tail}
-  def read_item_quoted([92,34|tail], acc), do: read_item_quoted(tail, [34|acc])
-  def read_item_quoted([34|tail],    acc), do: {Enum.reverse(acc), tail}
-  def read_item_quoted([ch|tail],    acc), do: read_item_quoted(tail, [ch|acc])
+  defp read_item_quoted([34|tail]), do: read_item_quoted(tail, [])
+  defp read_item_quoted([78,85,76,76|tail]), do: {nil, tail}
+  defp read_item_quoted([92,34|tail], acc), do: read_item_quoted(tail, [34|acc])
+  defp read_item_quoted([34|tail],    acc), do: {Enum.reverse(acc), tail}
+  defp read_item_quoted([ch|tail],    acc), do: read_item_quoted(tail, [ch|acc])
 end
