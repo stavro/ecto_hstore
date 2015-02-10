@@ -49,7 +49,7 @@ defmodule Ecto.Hstore do
   end
   def load(_), do: :error
 
-  def load_kvp(chars) do
+  defp load_kvp(chars) do
     {key, [61,62|tail]} = read_item_quoted(chars)
     {value, tail} = read_item_quoted(tail)
     if !is_nil(value), do: value = to_string(value)
