@@ -99,8 +99,8 @@ Elixir Maps and Postgres Hstore types have a few important differences that user
 To contribute you need to compile Ecto.Hstore from source and test it:
 
 ```
-$ git clone https://github.com/stavro/hstore_ecto.git
-$ cd hstore_ecto
+$ git clone https://github.com/stavro/ecto_hstore.git
+$ cd ecto_hstore
 $ mix test
 ```
 
