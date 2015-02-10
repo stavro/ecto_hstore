@@ -21,6 +21,40 @@ After you are done, run `mix deps.get` in your shell to fetch the dependencies.
 
 ## Usage
 
+Enable Hstore through an ecto migration:
+
+```elixir
+defmodule Repo.Migrations.EnableHstore do
+  use Ecto.Migration
+
+  def up do
+    execute "CREATE EXTENSION hstore IF NOT EXISTS"
+  end
+
+  def down do
+    execute "DROP EXTENSION hstore IF EXISTS"
+  end
+end
+```
+
+Add your desired Postgres hstore columns through a migration:
+
+```elixir
+defmodule Repo.Migrations.CreateUsers do
+  use Ecto.Migration
+
+  def up do
+    create table :users do
+      add :flags, :hstore, null: false, default: ""
+    end
+  end
+
+  def down do
+    drop table(:users)
+  end
+end
+```
+
 Define your Ecto model's schema using the corresponding `Ecto.Hstore` type:
 
 ```elixir
@@ -32,6 +66,8 @@ defmodule User do
   end
 end
 ```
+
+And now you're all set!
 
 ```elixir
 # Inserting a new user with flags is as simple as creating an Elixir Map:
