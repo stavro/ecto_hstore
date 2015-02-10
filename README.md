@@ -86,6 +86,7 @@ Elixir Maps and Postgres Hstore types have a few important differences that user
 
   * Postgres Hstore does not allow `null` keys, whereas Elixir Maps do.  Currently `nil` keys will not be serialized to Postgres.
   * Postgres Hstore does not have an `atom` type.  All keys are stored as strings.  Therefore extra caution must be taken to ensure that an Elixir Map doesn't contain two converging keys (eg: `%{:a => 2, "a" => 2}`), because they will be consolidated to one string key `"a"` in a non-deterministic manner.
+  * Postgres Hstore only supports a single level of key/value pairs.  Nested maps are not supported, and attempting to serialize nested maps will give undesirable results.
 
 ## Contributing
 
