@@ -1,27 +1,24 @@
-defmodule Ecto.HstoreTest do
+defmodule HStorex do
   use ExUnit.Case, async: true
+  import Postgrex.TestHelper
+  alias Postgrex.Connection, as: P
+  alias Postgrex.TypeInfo
 
-  test "dump" do
-    assert Ecto.Hstore.dump(%{a: 1}) == {:ok, ~s("a"=>"1")}
-    assert Ecto.Hstore.dump(%{"a" => 1}) == {:ok, ~s("a"=>"1")}
-    assert Ecto.Hstore.dump(%{a: "123,456"}) == {:ok, ~s("a"=>"123,456")}
-    assert Ecto.Hstore.dump(%{key: nil}) == {:ok, ~s("key"=>NULL)}
-    assert Ecto.Hstore.dump(%{a: 1, b: "2"}) == {:ok, ~s("a"=>"1", "b"=>"2")}
-    assert Ecto.Hstore.dump(%{a: ~s("quote")}) == {:ok, ~s("a"=>"\\"quote\\"")}
-    assert Ecto.Hstore.dump(%{"a b" => "cde"}) == {:ok, ~s("a b"=>"cde")}
-    assert Ecto.Hstore.dump(%{a: "unicode\x{0065}\x{0301}"}) == {:ok, ~s("a"=>"unicode\x{0065}\x{0301}")}
-    assert Ecto.Hstore.dump(%{nil: "value", a: 1}) == {:ok, ~s("a"=>"1")}
-    assert Ecto.Hstore.dump(%{nil: "value"}) == {:ok, ~s()}
+  setup do
+    {:ok, pid} = P.start_link(
+      database: "postgrex_test",
+      extensions: [{Hstorex.Hstore, {}}])
+    {:ok, [pid: pid]}
   end
 
-  test "load" do
-    assert Ecto.Hstore.load(~s("a"=>"1"))         == {:ok, %{"a" => "1"}}
-    assert Ecto.Hstore.load(~s("a"=>"123,456"))   == {:ok, %{"a" => "123,456"}}
-    assert Ecto.Hstore.load(~s("key"=>NULL))      == {:ok, %{"key" => nil}}
-    assert Ecto.Hstore.load(~s("a"=>"1", "b"=>"2"))   == {:ok, %{"a" => "1", "b" => "2"}}
-    assert Ecto.Hstore.load(~s("a"=>"\\"quote\\"")) == {:ok, %{"a" => ~s("quote")}}
-    assert Ecto.Hstore.load(~s("a b"=>"cde")) == {:ok, %{"a b" => "cde"}}
-    assert Ecto.Hstore.load(~s("a"=>"unicode\x{0065}\x{0301}")) == {:ok, %{"a" => "unicode\x{0065}\x{0301}"}}
-    assert Ecto.Hstore.load(~s()) == {:ok, %{}}
+  test "encode and decode", context do
+    assert [{%{"foo" => "bar"}}] = query("SELECT $1::hstore", [%{foo: "bar"}])
+    assert [{%{"foo" => "bar"}}] = query("SELECT $1::hstore", [%{"foo": "bar"}])
+    assert [{%{"foo" => "1", "bar" => "2"}}] = query("SELECT $1::hstore", [%{foo: 1, bar: 2}])
+    assert [{%{"foo" => "1", "bar" => "2"}}] = query("SELECT $1::hstore", [%{foo: 1, bar: 2}])
+    assert [{%{"foo" => nil}}] = query("SELECT $1::hstore", [%{foo: nil}])
+    assert [{%{"foo bar" => nil}}] = query("SELECT $1::hstore", [%{"foo bar" => nil}])
+    assert %Postgrex.Error{} = query("SELECT $1::hstore", [%{nil: "bar"}])
+    assert [{%{"unicode\x{0065}\x{0301}" => "foo"}}] = query("SELECT $1::hstore", [%{"unicode\x{0065}\x{0301}" => "foo"}])
   end
 end

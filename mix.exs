@@ -1,10 +1,10 @@
-defmodule Ecto.Hstore.Mixfile do
+defmodule Hstorex.Mixfile do
   use Mix.Project
 
-  @version "0.0.1"
+  @version "0.0.2"
 
   def project do
-    [app: :ecto_hstore,
+    [app: :hstorex,
      version: @version,
      elixir: "~> 1.0",
      deps: deps,
@@ -15,22 +15,22 @@ defmodule Ecto.Hstore.Mixfile do
      package: package,
 
      # Docs
-     name: "Ecto.Hstore",
+     name: "Hstorex",
      docs: [source_ref: "v#{@version}",
-            source_url: "https://github.com/stavro/ecto_hstore"]
+            source_url: "https://github.com/stavro/hstorex"]
     ]
   end
 
   defp description do
     """
-    Ecto.Hstore adds Postgres Hstore compatibility to Ecto.
+    Hstorex adds Postgres Hstore compatibility to Postgrex.
     """
   end
 
   defp package do
     [contributors: ["Sean Stavropoulos"],
      licenses: ["Apache 2.0"],
-     links: %{"GitHub" => "https://github.com/stavro/ecto_hstore"}]
+     links: %{"GitHub" => "https://github.com/stavro/hstorex"}]
   end
 
   def application do
@@ -38,6 +38,8 @@ defmodule Ecto.Hstore.Mixfile do
   end
 
   defp deps do
-    [{:ecto, ">= 0.5.0"}]
+    [
+      {:postgrex, git: "https://github.com/ericmj/postgrex.git"}
+    ]
   end
 end

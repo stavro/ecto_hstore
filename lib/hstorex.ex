@@ -1,0 +1,2 @@
+defmodule Hstorex do
+end

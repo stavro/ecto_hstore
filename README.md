@@ -1,19 +1,18 @@
-Ecto.Hstore
+Hstorex
 ===========
 
-Ecto.Hstore adds Postgres Hstore compatibility to your Ecto models for storing sets of key/value pairs within a single PostgreSQL value.  This can be useful in various scenarios, such as rows with many attributes that are rarely examined, or semi-structured data. Keys and values are simply text strings.
+Hstorex adds Postgres Hstore compatibility to your Postgrex connection or storing sets of key/value pairs within a single PostgreSQL value.  This can be useful in various scenarios, such as rows with many attributes that are rarely examined, or semi-structured data. Keys and values are simply text strings.
 
-Hstore structures are represented by Elixir Maps.
+Hstore structures are represented by Elixir Maps, and serialization uses Postgres' binary format.
 
 ## Installation
 
-Add Ecto.Hstore as a dependency in your `mix.exs` file.
+Add Hstorex as a dependency in your `mix.exs` file.
 
 ```elixir
 defp deps do
-  [{:postgrex, ">= 0.0.0"},
-   {:ecto, "~> 0.7"},
-   {:ecto_hstore, "~> 0.0.1"}]
+  [{:postgrex, git: "https://github.com/ericmj/postgrex.git"},
+   {:hstorex, git: "https://github.com/stavro/hstorex.git"}}]
 end
 ```
 
@@ -21,63 +20,22 @@ After you are done, run `mix deps.get` in your shell to fetch the dependencies.
 
 ## Usage
 
-Enable Hstore through an ecto migration:
+Enable Hstore through an migration:
 
-```elixir
-defmodule Repo.Migrations.EnableHstore do
-  use Ecto.Migration
-
-  def up do
-    execute "CREATE EXTENSION hstore IF NOT EXISTS"
-  end
-
-  def down do
-    execute "DROP EXTENSION hstore IF EXISTS"
-  end
-end
+```sql
+CREATE EXTENSION IF NOT EXISTS hstore;
 ```
 
-Add your desired Postgres hstore columns through a migration:
+Add Hstorex to your extensions list during your Postgrex connection initialization:
 
 ```elixir
-defmodule Repo.Migrations.CreateUsers do
-  use Ecto.Migration
-
-  def up do
-    create table :users do
-      add :flags, :hstore, null: false, default: ""
-    end
-  end
-
-  def down do
-    drop table(:users)
-  end
-end
-```
-
-Define your Ecto model's schema using the corresponding `Ecto.Hstore` type:
-
-```elixir
-defmodule User do
-  use Ecto.Model
-
-  schema "users" do
-    field :flags, Ecto.Hstore
-  end
-end
+{:ok, pid} = Postgrex.Connection.start_link(extensions: [{Hstorex.Hstore, {}}])
 ```
 
 And now you're all set!
 
 ```elixir
-# Inserting a new user with flags is as simple as creating an Elixir Map:
-user = Repo.insert %User{flags: %{key: "value"}}
-user.flags #=> %{"key" => "value"}
 
-# Updating the hstore value is as simple as `Dict.put`
-flags = Dict.put(user.flags, "key2", "value2")
-user = %User{user| flags: flags}
-Repo.update user
 ```
 
 ## Quirks
@@ -93,8 +51,8 @@ Elixir Maps and Postgres Hstore types have a few important differences that user
 To contribute you need to compile Ecto.Hstore from source and test it:
 
 ```
-$ git clone https://github.com/stavro/hstore_ecto.git
-$ cd hstore_ecto
+$ git clone https://github.com/stavro/hstorex.git
+$ cd hstorex
 $ mix test
 ```
 
