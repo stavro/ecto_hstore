@@ -1,7 +1,7 @@
 Ecto.Hstore
 ===========
 
-> Note: This package works with the current versions of Postgrex and Ecto.  However, upon the next major release of Postgrex, a more efficient Hstore decoder will be merged into the Postgrex core plugin, and this text-based parsing workaround will no longer be needed.
+> Note: This package is now obsolete and is kept here for historical purposes as well as anyone who hasn't upgraded.  Postgrex offers hstore support directly.
 
 Ecto.Hstore adds Postgres Hstore compatibility to your Ecto models for storing sets of key/value pairs within a single PostgreSQL value.  This can be useful in various scenarios, such as rows with many attributes that are rarely examined, or semi-structured data. Keys and values are simply text strings.
 
