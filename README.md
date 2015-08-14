@@ -30,11 +30,11 @@ defmodule Repo.Migrations.EnableHstore do
   use Ecto.Migration
 
   def up do
-    execute "CREATE EXTENSION hstore IF NOT EXISTS"
+    execute "CREATE EXTENSION IF NOT EXISTS hstore "
   end
 
   def down do
-    execute "DROP EXTENSION hstore IF EXISTS"
+    execute "DROP EXTENSION IF EXISTS hstore "
   end
 end
 ```
