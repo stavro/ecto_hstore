@@ -24,7 +24,7 @@ defmodule Ecto.Hstore do
      |> Enum.join(", ")
     {:ok, serialized_hstore}
   end
-  defp serialize_kvp({nil, value}), do: nil
+  defp serialize_kvp({nil, _}), do: nil
   defp serialize_kvp({key, nil}), do: "\"#{escape(key)}\"=>NULL"
   defp serialize_kvp({key, value}), do: "\"#{escape(key)}\"=>\"#{escape(value)}\""
   
