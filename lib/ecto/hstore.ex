@@ -41,13 +41,14 @@ defmodule Ecto.Hstore do
     load(to_char_list(hstore))
   end
   def load(chars) when is_list(chars), do: load(chars, %{})
+  def load(_), do: :error
+
   defp load([], acc), do: {:ok, acc}
   defp load([44,32|tail], acc), do: load(tail, acc)
   defp load(chars, acc) do
     {map, tail} = load_kvp(chars)
     load(tail, Map.merge(acc, map))
   end
-  def load(_), do: :error
 
   defp load_kvp(chars) do
     {key, [61,62|tail]} = read_item_quoted(chars)
